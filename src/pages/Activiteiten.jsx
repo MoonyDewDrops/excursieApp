@@ -1,6 +1,8 @@
-import { Calendar, Heart } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Calendar, Filter, Heart } from 'lucide-react';
 import Card from '../components/Card';
 import SearchBar from '../components/SearchBar';
+import { useApp } from '../contexts/AppContext';
 import './ItemsPage.css';
 
 // Mock data - will be replaced by user's database
@@ -43,7 +45,29 @@ const mockActivities = [
 ];
 
 export default function Activiteiten() {
-    const filteredActivities = mockActivities;
+    const [search, setSearch] = useState('');
+    const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+    const { toggleFavorite, isFavorite } = useApp();
+
+    const filteredActivities = useMemo(() => {
+        let results = mockActivities;
+
+        if (showFavoritesOnly) {
+            results = results.filter(item => isFavorite(item.id, 'activity'));
+        }
+
+        if (search.trim()) {
+            const searchLower = search.toLowerCase();
+            results = results.filter(item =>
+                item.title.toLowerCase().includes(searchLower) ||
+                item.description.toLowerCase().includes(searchLower) ||
+                item.time.toLowerCase().includes(searchLower)
+            );
+        }
+
+        return results;
+    }, [search, showFavoritesOnly, isFavorite]);
+
     return (
         <div className="items-page">
             <header className="page-header">
@@ -60,12 +84,15 @@ export default function Activiteiten() {
 
             <div className="filters">
                 <SearchBar
-                    value=""
+                    value={search}
+                    onChange={setSearch}
                     placeholder="Zoek activiteiten..."
                 />
-
-                <button className="filter-toggle" disabled>
-                    <Heart size={18} />
+                <button
+                    className={`filter-toggle ${showFavoritesOnly ? 'active' : ''}`}
+                    onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                >
+                    <Heart size={18} fill={showFavoritesOnly ? 'currentColor' : 'none'} />
                     <span>Favorieten</span>
                 </button>
             </div>
@@ -74,17 +101,41 @@ export default function Activiteiten() {
                 <p>{filteredActivities.length} activiteit{filteredActivities.length !== 1 ? 'en' : ''} gevonden</p>
             </div>
 
-            <div className="grid">
-                {filteredActivities.map((item) => (
-                    <Card
-                        key={item.id}
-                        title={item.title}
-                        description={item.description}
-                        image={item.image}
-                        subtitle={item.time}
-                    />
-                ))}
-            </div>
+            {filteredActivities.length === 0 ? (
+                <div className="empty-state">
+                    <Filter size={48} />
+                    <h3>Geen resultaten</h3>
+                    <p>
+                        {showFavoritesOnly
+                            ? 'Je hebt nog geen favoriete activiteiten.'
+                            : 'Probeer een andere zoekterm.'}
+                    </p>
+                    {showFavoritesOnly && (
+                        <button
+                            className="btn btn-secondary"
+                            onClick={() => setShowFavoritesOnly(false)}
+                        >
+                            Toon alles
+                        </button>
+                    )}
+                </div>
+            ) : (
+                <div className="grid">
+                    {filteredActivities.map((item) => (
+                        <Card
+                            key={item.id}
+                            id={item.id}
+                            type="activity"
+                            title={item.title}
+                            description={item.description}
+                            image={item.image}
+                            subtitle={item.time}
+                            isFavorite={isFavorite(item.id, 'activity')}
+                            onToggleFavorite={toggleFavorite}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
