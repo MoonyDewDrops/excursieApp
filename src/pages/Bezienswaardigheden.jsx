@@ -1,63 +1,43 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { MapPin, Filter, Heart } from 'lucide-react';
 import Card from '../components/Card';
 import SearchBar from '../components/SearchBar';
 import { useApp } from '../contexts/AppContext';
 import './ItemsPage.css';
 
-//temporary data
-const mockAttractions = [
-    {
-        id: 1,
-        title: 'Brandenburger Tor',
-        description: 'Het iconische symbool van Berlijn en de Duitse eenwording. Een van de bekendste herkenningspunten van Duitsland.',
-        image: 'https://images.pexels.com/photos/2082104/pexels-photo-2082104.jpeg?auto=compress&cs=tinysrgb&w=600',
-        location: 'Pariser Platz',
-    },
-    {
-        id: 2,
-        title: 'East Side Gallery',
-        description: 'De langste openlucht galerie ter wereld op een stuk van de Berlijnse Muur met 105 kunstwerken.',
-        image: 'https://images.pexels.com/photos/326289/pexels-photo-326289.jpeg?auto=compress&cs=tinysrgb&w=600',
-        location: 'Mühlenstraße',
-    },
-    {
-        id: 3,
-        title: 'Holocaust Monument',
-        description: 'Een indrukwekkend gedenkteken voor de Joodse slachtoffers van de Holocaust, met 2.711 betonnen stelae.',
-        image: 'https://images.pexels.com/photos/183579/pexels-photo-183579.jpeg?auto=compress&cs=tinysrgb&w=600',
-        location: 'Cora-Berliner-Straße',
-    },
-    {
-        id: 4,
-        title: 'Checkpoint Charlie',
-        description: 'De beroemde grensovergang tussen Oost- en West-Berlijn tijdens de Koude Oorlog.',
-        image: 'https://images.pexels.com/photos/269872/pexels-photo-269872.jpeg?auto=compress&cs=tinysrgb&w=600',
-        location: 'Friedrichstraße',
-    },
-    {
-        id: 5,
-        title: 'Berliner Dom',
-        description: 'De prachtige domkerk van Berlijn met indrukwekkende architectuur en een fantastisch uitzicht.',
-        image: 'https://images.pexels.com/photos/1121783/pexels-photo-1121783.jpeg?auto=compress&cs=tinysrgb&w=600',
-        location: 'Museum Island',
-    },
-    {
-        id: 6,
-        title: 'Potsdam',
-        description: 'Excursie naar het prachtige Paleis Sanssouci en de historische tuinen.',
-        image: 'https://images.pexels.com/photos/2609418/pexels-photo-2609418.jpeg?auto=compress&cs=tinysrgb&w=600',
-        location: 'Potsdam',
-    },
-];
-
 export default function Bezienswaardigheden() {
+    const [attractions, setAttractions] = useState([]);
     const [search, setSearch] = useState('');
     const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
     const { toggleFavorite, isFavorite } = useApp();
+    
+    useEffect(() => {
+    async function fetchAttractions() {
+        try {
+            const response = await fetch(
+                "http://localhost:3001/api/bezienswaardigheden"
+            );
+
+            const data = await response.json();
+
+            console.log(data);
+
+            setAttractions(data);
+
+        } catch (error) {
+            console.error(
+                "Fout bij ophalen bezienswaardigheden:",
+                error
+            );
+        }
+    }
+
+    fetchAttractions();
+
+}, []);
 
     const filteredAttractions = useMemo(() => {
-        let results = mockAttractions;
+        let results = attractions;
 
         if (showFavoritesOnly) {
             results = results.filter(item => isFavorite(item.id, 'attraction'));
@@ -73,7 +53,7 @@ export default function Bezienswaardigheden() {
         }
 
         return results;
-    }, [search, showFavoritesOnly, isFavorite]);
+    }, [search, showFavoritesOnly, isFavorite, attractions]);
 
     return (
         <div className="items-page">
