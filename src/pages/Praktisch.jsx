@@ -29,7 +29,7 @@ export default function Praktisch() {
     async function fetchPraktischInfo() {
       try {
         const response = await fetch(
-          "http://localhost:3001/api/praktisch"
+          "https://excursieapp-production.up.railway.app//api/praktisch"
         );
 
         const data = await response.json();

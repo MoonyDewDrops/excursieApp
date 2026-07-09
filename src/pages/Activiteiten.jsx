@@ -16,7 +16,7 @@ export default function Activiteiten() {
         async function fetchActivities() {
             try {
                 const response = await fetch(
-                    "http://localhost:3001/api/activiteiten"
+                    "https://excursieapp-production.up.railway.app//api/activiteiten"
                 );
 
                 const data = await response.json();

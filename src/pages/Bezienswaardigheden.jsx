@@ -15,7 +15,7 @@ export default function Bezienswaardigheden() {
     async function fetchAttractions() {
         try {
             const response = await fetch(
-                "http://localhost:3001/api/bezienswaardigheden"
+                "https://excursieapp-production.up.railway.app//api/bezienswaardigheden"
             );
 
             const data = await response.json();

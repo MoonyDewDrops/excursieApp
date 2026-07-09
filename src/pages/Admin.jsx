@@ -18,7 +18,7 @@ export default function Admin() {
     async function loadItems() {
 
         const response = await fetch(
-            "http://localhost:3001/api/bezienswaardigheden"
+            "https://excursieapp-production.up.railway.app//api/bezienswaardigheden"
         );
         const data = await response.json();
         setItems(data);
@@ -40,7 +40,7 @@ export default function Admin() {
 
         if (editingId === null) {
             await fetch(
-                "http://localhost:3001/api/bezienswaardigheden",
+                "https://excursieapp-production.up.railway.app//api/bezienswaardigheden",
                 {
                     method: "POST",
                     headers: {
@@ -51,7 +51,7 @@ export default function Admin() {
             );
         } else {
             await fetch(
-                `http://localhost:3001/api/bezienswaardigheden/${editingId}`,
+                `https://excursieapp-production.up.railway.app//api/bezienswaardigheden/${editingId}`,
                 {
                     method: "PUT",
                     headers: {
@@ -74,7 +74,7 @@ export default function Admin() {
         if (!window.confirm("Weet je het zeker?")) return;
 
         await fetch(
-            `http://localhost:3001/api/bezienswaardigheden/${id}`,
+            `https://excursieapp-production.up.railway.app//api/bezienswaardigheden/${id}`,
             {
                 method: "DELETE"
             }
