@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import Bezienswaardigheden from './pages/Bezienswaardigheden';
 import Activiteiten from './pages/Activiteiten';
 import Praktisch from './pages/Praktisch';
+import Login from "./pages/Login";
+import Admin from "./pages/Admin";
 import './App.css';
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
             <Route path="/bezienswaardigheden" element={<Bezienswaardigheden />} />
             <Route path="/activiteiten" element={<Activiteiten />} />
             <Route path="/praktisch" element={<Praktisch />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </Layout>
       </BrowserRouter>

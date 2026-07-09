@@ -5,6 +5,7 @@ import db from "./db.js";
 import bezienswaardighedenRoutes from "./routes/bezienswaardigheden.js";
 import activiteitenRoutes from "./routes/activiteiten.js";
 import praktischRoutes from "./routes/praktisch.js";
+import authRoutes from "./routes/auth.js";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use("/api/bezienswaardigheden", bezienswaardighedenRoutes);
 app.use("/api/activiteiten", activiteitenRoutes);
 app.use("/api/praktisch", praktischRoutes);
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 3001;
 

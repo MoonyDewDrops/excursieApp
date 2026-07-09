@@ -5,7 +5,9 @@ import {
   Calendar,
   Info,
   Menu,
-  X
+  X,
+  LogIn,
+  Shield
 } from 'lucide-react';
 import { useState } from 'react';
 import './Navigation.css';
@@ -19,6 +21,7 @@ const navItems = [
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user"));
 
   return (
     <nav className="nav">
@@ -50,6 +53,33 @@ export default function Navigation() {
               <span>{label}</span>
             </NavLink>
           ))}
+          {user ? (
+
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "nav-link-active" : ""}`
+              }
+              onClick={() => setIsOpen(false)}
+            >
+              <Shield size={20} />
+              <span>CMS</span>
+            </NavLink>
+
+          ) : (
+
+            <NavLink
+              to="/login"
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "nav-link-active" : ""}`
+              }
+              onClick={() => setIsOpen(false)}
+            >
+              <LogIn size={20} />
+              <span>Login</span>
+            </NavLink>
+
+          )}
         </div>
       </div>
     </nav>

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import './Praktisch.css';
 
+//the icons, its kind of irking me rn so will change later
 const sectionIcons = {
     "Contactinformatie": PhoneCall,
     "Vervoer": Train,
