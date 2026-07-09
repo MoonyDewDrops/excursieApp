@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import db from "./db.js";
 import bezienswaardighedenRoutes from "./routes/bezienswaardigheden.js";
+import activiteitenRoutes from "./routes/activiteiten.js";
+import praktischRoutes from "./routes/praktisch.js";
 
 dotenv.config();
 
@@ -11,35 +13,12 @@ const app = express();
 
 //makes it so that react can communicate with backend
 app.use(cors());
-//Gives express glasses to read braille
+//Gives express glasses to read braille (see the json)
 app.use(express.json());
 
 app.use("/api/bezienswaardigheden", bezienswaardighedenRoutes);
-
-//test route to see if backend is working
-app.get("/api/pizza", (req, res) => {
-    res.json({
-        message: "Backend is working!"
-    });
-});
-
-app.get("/api/database-test", async (req, res) => {
-    try {
-        const [result] = await db.query("SELECT 1");
-
-        res.json({
-            message: "Database connected!",
-            result
-        });
-
-    } catch (error) {
-        console.error(error);
-
-        res.status(500).json({
-            message: "Database connection failed"
-        });
-    }
-});
+app.use("/api/activiteiten", activiteitenRoutes);
+app.use("/api/praktisch", praktischRoutes);
 
 const PORT = process.env.PORT || 3001;
 

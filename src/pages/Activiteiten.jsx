@@ -1,56 +1,40 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Calendar, Filter, Heart } from 'lucide-react';
 import Card from '../components/Card';
 import SearchBar from '../components/SearchBar';
 import { useApp } from '../contexts/AppContext';
 import './ItemsPage.css';
 
-// Mock data - will be replaced by user's database
-const mockActivities = [
-    {
-        id: 1,
-        title: 'Computerspelmuseum',
-        description: `Ontdek de geschiedenis van videogames. Van klassieke arcadespelletjes tot moderne virtual reality experiences.`,
-        image: 'https://images.pexels.com/photos/271009/pexels-photo-271009.jpeg?auto=compress&cs=tinysrgb&w=600',
-        time: 'Ochtendprogramma',
-    },
-    {
-        id: 2,
-        title: 'Berlin Story Bunker',
-        description: 'Een indrukwekkend historisch museum onder de grond. Leer alles over de Tweede Wereldoorlog.',
-        image: 'https://images.pexels.com/photos/2609418/pexels-photo-2609418.jpeg?auto=compress&cs=tinysrgb&w=600',
-        time: 'Middagprogramma',
-    },
-    {
-        id: 3,
-        title: 'Hackescher Markt',
-        description: 'Verken de levendige wijk met boetiekjes, restaurants en de beroemde Hackesche Höfe.',
-        image: 'https://images.pexels.com/photos/269872/pexels-photo-269872.jpeg?auto=compress&cs=tinysrgb&w=600',
-        time: 'Vrije tijd',
-    },
-    {
-        id: 4,
-        title: 'Museum Island Tour',
-        description: 'Bezoek de vijf wereldberoemde musea op het UNESCO Werelderfgoed Museumsinsel.',
-        image: 'https://images.pexels.com/photos/1121783/pexels-photo-1121783.jpeg?auto=compress&cs=tinysrgb&w=600',
-        time: 'Optioneel',
-    },
-    {
-        id: 5,
-        title: 'Street Art Walking Tour',
-        description: 'Ontdek de beste street art en graffiti in de alternatieve wijken van Berlijn.',
-        image: 'https://images.pexels.com/photos/326289/pexels-photo-326289.jpeg?auto=compress&cs=tinysrgb&w=600',
-        time: 'Optioneel',
-    },
-];
 
 export default function Activiteiten() {
+    const [activities, setActivities] = useState([]);
     const [search, setSearch] = useState('');
     const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
     const { toggleFavorite, isFavorite } = useApp();
 
+    useEffect(() => {
+        async function fetchActivities() {
+            try {
+                const response = await fetch(
+                    "http://localhost:3001/api/activiteiten"
+                );
+
+                const data = await response.json();
+
+                setActivities(data);
+            } catch (error) {
+                console.error(
+                    "Fout bij ophalen activiteiten:",
+                    error
+                );
+            }
+        }
+
+        fetchActivities();
+    }, []);
+
     const filteredActivities = useMemo(() => {
-        let results = mockActivities;
+        let results = activities;
 
         if (showFavoritesOnly) {
             results = results.filter(item => isFavorite(item.id, 'activity'));
@@ -66,7 +50,7 @@ export default function Activiteiten() {
         }
 
         return results;
-    }, [search, showFavoritesOnly, isFavorite]);
+    }, [search, showFavoritesOnly, isFavorite, activities]);
 
     return (
         <div className="items-page">
